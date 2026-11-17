@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans antialiased text-slate-700;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 45%, #eff6ff 100%);
+  background-attachment: fixed;
+}
+
+/* 讓手機點擊時不出現灰色高亮 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
