@@ -2,7 +2,8 @@
 
 React + Vite + Tailwind CSS + Supabase。
 
-- `/` 簽到處管理介面（Staff）
+- `/` 來賓前台簽到（SignIn，放在大門口平板）
+- `/manage` 簽到處管理後台（StaffManage，工作人員使用）
 - `/principal` 校長手機查閱介面（Principal）
 
 ## 開始使用
