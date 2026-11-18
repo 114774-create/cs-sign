@@ -1,4 +1,4 @@
--- 青山國小校慶簽到系統：所有資料表皆使用 cssign_ 前綴，避免與其他專案共用 Supabase 時衝突
+-- 青山國小校慶簽到系統：所有資料表皆使用 cssign_ 前綴，與其他專案共用 Supabase 時衝突
 
 -- 建立邀請名單
 CREATE TABLE cssign_invitations (
