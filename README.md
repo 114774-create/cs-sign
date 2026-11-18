@@ -1,15 +1,21 @@
-# 青山國小｜校慶簽到系統
+# 青山國小｜活動簽到系統
 
-React + Vite + Tailwind CSS + Supabase。
+React + Vite + Tailwind CSS + Supabase。可重複用於不同活動（校慶、畢業典禮…）。
 
-- `/` 來賓前台簽到（SignIn，放在大門口平板）
-- `/manage` 簽到處管理後台（StaffManage，工作人員使用）
-- `/principal` 校長手機查閱介面（Principal）
+## 頁面
+
+| 路徑 | 說明 | 密碼 |
+| --- | --- | --- |
+| `/` | 來賓前台簽到（放在大門口平板），右上角可進入管理與校長頁 | 無 |
+| `/manage` | 簽到處管理：簽到名單、邀請名單、活動設定、匯出、重置 | 需要 |
+| `/principal` | 校長手機查閱（4 秒自動更新，勾選僅存在手機） | 需要 |
+
+預設密碼為 `2026`，登入管理後台後可在「活動設定」修改（管理與校長頁共用同一組密碼）。
 
 ## 開始使用
 
-1. 在 Supabase 的 SQL Editor 執行 `supabase/schema.sql`（資料表為 `cssign_guests`、`cssign_invitations`，已加前綴以便與其他專案共用）
-2. 複製 `.env.example` 為 `.env.local`，填入 Supabase URL 與 anon key
+1. 在 Supabase 的 SQL Editor 執行 `supabase/schema.sql`（可重複執行，不會覆蓋既有資料）。
+2. 複製 `.env.example` 為 `.env.local`，填入 Supabase URL 與 anon key。
 3. 安裝並啟動：
 
 ```bash
@@ -17,4 +23,21 @@ npm install
 npm run dev
 ```
 
-4. 建置：`npm run build`
+## 邀請名單上傳
+
+- 支援 `.csv`、`.txt`、`.xlsx`、`.xls`，欄位順序為「姓名、單位、職稱」，第一列可有標題列。
+- CSV 會先嘗試 UTF-8，失敗時自動以 Big5 解碼；出現亂碼、缺少姓名、欄位過長等問題會顯示提示，且有問題的列不會匯入。
+- 管理後台可下載範本。
+
+## 匯出
+
+「簽到名單」分頁可一鍵匯出 Excel (.xlsx) 或 CSV（UTF-8 含 BOM，Excel 直接開啟不會亂碼）。
+
+## 開始新活動
+
+「活動設定」→「開始新活動」可一次清空簽到紀錄與邀請名單，並選擇性更新活動名稱。建議先匯出留存。
+
+## 安全提醒
+
+密碼與資料表皆允許以 anon key 讀寫，密碼只是防止誤觸的簡易閘門，不是嚴格的安全機制。
+如需更高安全性，請改用 Supabase Auth 並調整 RLS 政策。

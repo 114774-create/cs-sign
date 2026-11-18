@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
+import { fetchSettings } from './settings';
 
 export default function Principal() {
   const [guests, setGuests] = useState([]);
+  const [eventName, setEventName] = useState('');
   const [checkedItems, setCheckedItems] = useState(() => {
     return JSON.parse(localStorage.getItem('principalChecked')) || {};
   });
 
   useEffect(() => {
+    fetchSettings().then((s) => setEventName(s.eventName));
     fetchGuests();
     const interval = setInterval(fetchGuests, 4000); // 每 4 秒自動更新
     return () => clearInterval(interval);
@@ -15,7 +18,18 @@ export default function Principal() {
 
   const fetchGuests = async () => {
     const { data } = await supabase.from('cssign_guests').select('id, seq_num, name, title, sign_in_time').order('seq_num', { ascending: true });
-    if (data) setGuests(data);
+    if (data) {
+      setGuests(data);
+      // 清除已不存在的來賓的勾選紀錄（例如活動重置後）
+      setCheckedItems((prev) => {
+        const ids = new Set(data.map((g) => g.id));
+        const next = {};
+        let changed = false;
+        Object.keys(prev).forEach((k) => { if (ids.has(k)) next[k] = prev[k]; else changed = true; });
+        if (changed) localStorage.setItem('principalChecked', JSON.stringify(next));
+        return changed ? next : prev;
+      });
+    }
   };
 
   const toggleCheck = (id) => {
@@ -38,6 +52,7 @@ export default function Principal() {
           校長
           <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent"> 查閱名單</span>
         </h1>
+        {eventName && <p className="mt-1 text-sm text-slate-500">青山國小 {eventName}</p>}
         <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-sm font-bold text-emerald-600 shadow-sm shadow-emerald-100 ring-1 ring-white/80">
           已確認 {checkedCount} / {guests.length}
         </div>
